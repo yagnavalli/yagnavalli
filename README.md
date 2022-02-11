@@ -1,5 +1,5 @@
 - 👋 Hi, I’m @yagnavalli
-- 👀 I’m interested in data science.
+- 👀 I’m interested in data science and information design.
 - 🌱 I’m currently looking for a full-time job relevant to my interests.
 - 📫 How to reach me: yagnavallim@gmail.com
 
