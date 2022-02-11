@@ -1,0 +1,56 @@
+Project Implementation:
+
+Step 1: The gas sensor and buzzer are attached to the Raspberry Pi's digital pins.
+Step 2: Make a connection between the Raspberry Pi and the above-mentioned sensor.
+Step 3: If you detect a gas leak, turn on the exhaust fan.
+Step 4: Using the GSM Module, an alarm is delivered to the registered mobile number.
+Step 5: On the Raspberry Pi, a python programme is loaded that describes what action should be taken when certain inputs are received.
+Step 6: From any remote location, the smartphone is utilised to get the SMS of the gas leakage.
+
+Python  Implementation Code
+
+import RPi.GPIO as GPIO
+import time
+import serial
+a = "+919535096576"
+recipient = a
+message = "Gas is leaking, please be ALERT!"
+GPIO.setmode(GPIO.BOARD)
+#Input to the pi board from ldr module in pin 7 
+LPG = 11
+Alarm = 13
+FAN = 15
+GPIO.setup(LPG,GPIO.IN)
+GPIO.setup(Alarm,GPIO.OUT)
+GPIO.setup(FAN,GPIO.OUT) 
+phone = serial.Serial("/dev/ttyUSB0",  baudrate=9600, timeout=5)
+while True:
+    #printing the value from ldr module
+    i = GPIO.input(LPG)
+    time.sleep(1)
+    if i ==1:
+        
+        print ("LPG Gas is leaking ")
+        GPIO.output(FAN, GPIO.HIGH)
+        time.sleep(0.2)
+        GPIO.output(Alarm, GPIO.HIGH)
+        time.sleep(0.2)
+        GPIO.output(Alarm, GPIO.LOW)
+        time.sleep(0.1)
+        GPIO.output(Alarm, GPIO.HIGH)
+        time.sleep(0.5)
+        phone.write(b'ATZ\r')
+        time.sleep(0.5)
+        phone.write(b'AT+CMGF=1\r')
+        time.sleep(0.5)
+        phone.write(b'AT+CMGS="' + recipient.encode() + b'"\r')
+        time.sleep(0.5)
+        phone.write(message.encode() + b"\r")
+        time.sleep(0.5)
+        phone.write(bytes([26]))
+        time.sleep(0.5)
+    else:
+        GPIO.output(Alaram, GPIO.LOW)
+        time.sleep(0.2)
+        GPIO.output(FAN, GPIO.LOW)
+        time.sleep(1)
